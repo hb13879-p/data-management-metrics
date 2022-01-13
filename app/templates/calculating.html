@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block head %}
+    {{ super() }}
+    <!-- Add any extra head stuff here -->
+{% endblock %}
+{% block content %}
+
+<div class="row justify-content-md-center">
+  <div class="col-md-auto">   
+      
+                <h5 ><p id=spinner >
+                  <i class="fa fa-refresh fa-spin fa-3x fa-fw mt-4"></i>
+                  <strong class="mt-4">Running Profiler...</strong>
+              
+              </p>
+              <p id=resultComplete class="mt-4">
+                  <strong>Results Complete</strong>
+              </p>
+           </h5>
+           <button class="btn btn-lg btn-primary btn-block" id=seeResultsButton onclick="window.location.href='{{ url_for( 'output') }}';" type="button">See Results </button>
+          </div>
+  </div> 
+  {% endblock %}
+  {% block scripts %}
+  <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+  <!-- <script type="text/javascript" src="{{ url_for('static', filename='js/basic_profile.js') }}"></script> -->
+  
+  <script>
+      
+      $(document).ready( function() {
+          $('#resultComplete').hide();
+          $('#seeResultsButton').hide();
+          var connector = '{{ connector }}';
+          var db_input_file = '{{ db_input_file }}';
+          var db_schema = '{{ db_schema }}';
+          var demo_version = '{{ demo_version }}';
+          $.post('{{url_for('basic_profile')}}', {connector: connector, db_input_file: db_input_file, db_schema: db_schema,demo_version:demo_version}, function(data, status) {
+              $('#spinner').hide();
+              $('#resultComplete').show();
+              $('#seeResultsButton').show();
+          })
+      });
+  </script>
+  {% endblock %}

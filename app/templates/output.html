@@ -1,0 +1,408 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block head %}
+    {{ super() }}
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+
+{% endblock %}
+{% block content %}
+
+<div id="page-content-wrapper">
+  <!-- Metrics Container --> 
+  <div class="container"> 
+    <div class="row justify-content-md-center">
+            <div class="col-3 mb-4 mt-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Rows Profiled</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{row_count}}</div>
+                      </div>
+                      <div class="col-auto">
+                        <i class="fa fa-table fa-2x text-gray-300"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            <!-- Columns Profiled Metric -->
+            <div class="col-3 mb-4 mt-4">
+                <div class="card border-left-warning shadow h-100 py-2">
+                    <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Columns Profiled</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{columns_profiled}}</div>
+                        </div>
+                        <div class="col-auto">
+                        <i class="fa fa-columns fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                </div>
+
+              <div class="col-3 mb-4 mt-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Duplicate Rows</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{duplicate_rows}}</div>
+                      </div>
+                      <div class="col-auto">
+                        <i class="fa fa-clone fa-2x text-gray-300"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+
+            </div>
+            <div class="row justify-content-md-center">
+                                      <!-- Tasks Card Example -->
+              <div class="col-3  mb-4 mt-4">
+                <div class="card border-left-info shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">% Blank Data</div>
+                        <div class="row no-gutters align-items-center">
+                          <div class="col-auto">
+                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{pc_blank_data}}%</div>
+                          </div>
+                          <div class="col">
+                            <div class="progress progress-sm mr-2">
+                              <div class="progress-bar bg-info" role="progressbar" style="width: 7%" aria-valuenow="7" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-auto">
+                        <i class="fa fa-question fa-2x text-gray-300"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tasks Card Example -->
+              <div class="col-3  mb-4 mt-4">
+                <div class="card border-left-info shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">PII Attributes</div>
+                        <div class="row no-gutters align-items-center">
+                          <div class="col-auto">
+                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{pii_attributes}}</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-auto">
+                        <i class="fa fa-user-secret fa-2x text-gray-300"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+        </div>
+        <!-- End of Metrics Container --> 
+
+
+                <!-- Card PAnels -->
+                <div class="container-fluid"> 
+                  <div class="row">
+                      <!-- Start of Column VIews Card -->
+                      <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12"> 
+                          <div class="card mb-3 mt-2 text-center"> <!--text-white mt-2 mb-3 lighten-2  blue    p-3-->
+                              <div class="card-body">
+                              <h5 class="card-title">Column Views</h5>
+                              
+                              <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                  {% for item in cols %}
+                                  
+                                  {% if loop.index == 1 %}
+                                  <li class="nav-item">
+                                      <a class="nav-link active" id="{{item}}-tab" data-toggle="tab" href="#{{item}}" role="tab" aria-controls="{{item}}" aria-selected="true">{{item}}</a>
+                                  </li>
+                                  {% else %}
+                                  <li class="nav-item">
+                                      <a class="nav-link" id="{{item}}-tab" data-toggle="tab" href="#{{item}}" role="tab" aria-controls="{{item}}" aria-selected="false">{{item}}</a>
+                                  </li>
+                                  {% endif %}
+                                  {% endfor %}
+                              </ul>
+                            <!-- Tab panes -->
+                              <div class="tab-content">
+                                  {% for item in cols %}
+                                      {% if loop.index == 1 %}
+                                           <div class="tab-pane active" id="{{item}}" role="tabpanel" aria-labelledby="{{item}}-tab">
+                                              <i class="fa fa-spinner fa-spin mt-3" id="{{item}}-spinner"></i> <!-- fa-3x fa-fw -->
+                                               <!-- <dl class="row">  </dl> -->
+                                              </div> <!--<div id="{{item}}-plotHist"></div> -->
+                                      {% else %}
+                                          <div class="tab-pane" id="{{item}}" role="tabpanel" aria-labelledby="{{item}}-tab"></div> <!--<div id="{{item}}-plotHist"></div> -->
+                                      {% endif %}
+                                  {% endfor %}
+                                  
+                                 
+                              </div> 
+                          </div>
+                          </div>
+
+      
+                      </div>
+                      <!-- End of Column Views Card -->
+      
+                      <!-- Start of Data Rules Card -->
+                      <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12">
+                          <div class="row">
+      
+                          
+                          <div class="card text-center mb-3 mt-2 w-100">
+                              <div class="card-body"> <!-- scrollable-panel -->
+                                <h5 class="card-title">Data Rules Extracted</h5>
+                                <p class="card-text" >
+                                  <table id="data_rules_table" class="responsive">
+                                      <thead>
+                                          <th>Data Insights</th>
+                                      </thead>
+                                      <tbody>
+                                      </tbody>
+                                  </table>
+                                  <i class="fa fa-spinner fa-spin mt-3" id="data_rules-spinner"></i>
+                              </div>
+                            </div>
+                          <!-- </div> -->
+                          <!-- End of Data Rules Card -->
+                          <!-- Start of AI Insights Card -->
+                          <!-- <div class="row"> -->
+                              <div class="card text-center mb-3 mt-2 w-100">
+                                  <div class="card-body "> <!-- scrollable-panel -->
+                                    <h5 class="card-title">ML Insights</h5>
+                                    
+                                    <p class="card-text" > 
+                                      <table id="ai_rules_table" class="responsive">
+                                          <thead>
+                                              <th>ML Insights Extracted</th>
+                                          </thead>
+                                          <tbody>
+                                          </tbody>
+                                      </table>
+                                      <i class="fa fa-spinner fa-spin mt-3" id="ai_rules-spinner"></i>
+                                  </div>
+                                </div>
+                          </div>
+                          <!-- End of AI insights Card -->
+                      </div>
+                      
+                  </div>
+                  <!-- End of Column views and date rules Card row -->
+                  <div class="row">
+                      <!-- Start of Anomaly Detection Card -->
+                      <div class="col-xl-5 col-lg-12 col-md-12 col-sm-12">
+                          <div class="card mb-3">
+                              <div class="card-body">
+                                <h5 class="card-title">Anomaly Detection</h5>
+                                <i class="fa fa-spinner fa-spin mt-3" id="anomaly_detection-spinner"></i>
+                                <p class="card-text">
+                                  <div class="row">
+                                    <div class="col-xl-12 col-lg-6 col-md-6 col-sm-12">
+                                      <div id=anomaly_div_1></div>
+                                    </div>
+                                    <div class="col-xl-12 col-lg-6 col-md-6 col-sm-12">
+                                      <div id=anomaly_div_2></div>
+                                    </div>
+                                  </div>
+                                  </p>
+                                  
+                                  
+                              </div>
+                            </div>
+                      </div>
+                      <!-- End of Anomaly Detection Card -->
+      
+                      <!-- Start of Postcode Explorer Card -->
+                  <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+                      <div class="card mb-3">
+                          <div class="card-body">
+                              <h5 class="card-title">Postcode Validation</h5>
+                              <i class="fa fa-spinner fa-spin mt-3" id="postcode-spinner"></i>
+                              <p class="card-text" id=pstcodes></p>
+                          </div>
+                      </div>
+                  </div>
+                      <!-- End of Postcode Explorer Card -->
+      
+                      <!-- Start of Address Explorer Card -->
+                      <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                          <div class="card mb-3">
+                              <div class="card-body">
+                                  <h5 class="card-title">ML Address Validation</h5>
+                                  <i class="fa fa-spinner fa-spin mt-3" id="address-spinner"></i>
+                                  <p class="card-text"  id=addr></p>
+                              </div>
+                          </div>
+                      </div>
+                          <!-- End of Address Explorer Card -->
+      
+                  </div>
+      
+      
+      
+              
+              </div> <!-- End of Card Panels Container -->
+      
+
+
+
+
+
+</div>
+  {% endblock %}
+  {% block scripts %}
+  <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+  <!-- Menu Toggle Script -->
+  <script>
+      $("#menu-toggle").click(function(e) {
+          $.get('{{url_for('download_data_wrapper')}}', function(data, status) {
+              window.location.href = data;
+          })
+      });
+  </script>
+  
+  
+
+  <script> 
+  $(document).ready(function() {
+      var target = $('#myTab li:first-child a').attr("href");
+      getColumnData(target);
+  })
+  </script>
+  
+  <script>
+      $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+      var target = $(e.target).attr("href") // activated tab
+      getColumnData(target);    
+    });
+  </script>
+
+  <script>
+      $(document).ready(function() {
+          $('#data_rules-spinner').show();
+          $('#ai_rules-spinner').show();
+          $.get('{{url_for('get_data_rules')}}', function(data, status) {
+              $('#data_rules-spinner').hide();
+              $('#ai_rules-spinner').hide();
+              var rules = data['data_rules'];
+              var ai_rules = data['ai_rules'];
+              $.each(rules, function(i, p) {
+                  $('#data_rules_table').append('<tr><td>' + p + '</td></tr>');
+              });
+              $('#data_rules_table').DataTable({
+                      "searching":false,
+                      "pageLength": 3});
+              
+              $.each(ai_rules, function(i, p) {
+                  $('#ai_rules_table').append('<tr><td>' + p + '</td></tr>');
+              });
+              $('#ai_rules_table').DataTable({
+                      "searching":false,
+                      "pageLength": 3});
+                  });
+              });
+  </script>
+
+  <script>
+      function getColumnData(target) {
+          var new_id = target;
+          var id = target + "-metrics"
+          if ( $.fn.dataTable.isDataTable( id ) ) {
+                  return;
+              }
+          else {
+            $(new_id+'-spinner').show();
+            $.post('{{url_for('display_col')}}', {col_name: target}, function(data, status) {
+                  $(new_id+'-spinner').hide();
+                  $(new_id).append(
+                      '<div class="container"> <div class="row"><div class="col-4"><table id="' + target.substring(1) + '-metrics" class="reponsive"><thead><th>Metric</th><th>Value</th></thead><tbody></tbody></table></div><div class="col-8"><div id="'+target+'-plotHist"></div></div></div></div>'
+                  ); 
+                  var graph = JSON.parse(data["plot"]);
+                  Plotly.plot(target+'-plotHist',graph,{});
+                  var metrics = data["metrics"];              
+                  $.each(metrics, function( index, value ) {                        
+                      $(id).append('<tr><td>' + value[0] + '</td><td>' + value[1] + '</td></tr>');
+                  });
+                  $(id).DataTable({
+                      "searching":false,
+                      "retrieve":true,
+                      "pageLength": 7,
+                      "bInfo":false});
+                });
+          }         
+      }
+  </script>
+
+  <script>
+      $(document).ready(function() {
+          $('#anomaly_detection-spinner').show();
+          $.get('{{url_for('detect_anomaly')}}', function(data, status) {
+              $('#anomaly_detection-spinner').hide();
+              var df_cred = data['df_cred'];
+              var df_mort = data['df_mort'];
+              $("#anomaly_div_1").html(df_cred);
+              $('#anomaly1').DataTable({
+                  "searching":false,
+                  "pageLength": 5});
+              $("#anomaly_div_2").html(df_mort);
+              $('#anomaly2').DataTable({
+                  "searching":false,
+                  "pageLength": 5
+                  });
+           })
+      })
+  </script>
+
+  <script>
+      $(document).ready(function() {
+          $('#address-spinner').show();
+          $.get('{{url_for('classify_addr')}}', function(data, status) {
+              $('#address-spinner').hide();
+              var df_cred = data['addr'];
+              $("#addr").html(df_cred);
+              $('#addresses').DataTable({
+                  "searching":false,
+                  "pageLength": 5});
+          })
+      })
+  </script>
+
+  <script>
+      $(document).ready(function() {
+          $('#postcode-spinner').show();
+          $.get('{{url_for('postcode_analysis')}}', function(data, status) {
+              $('#postcode-spinner').hide();
+              var pcodes = data['postcodes'];
+              $("#pstcodes").html(pcodes);
+              $('#postcodes').DataTable({
+                  "searching":false,
+                  "pageLength": 5});
+          })
+      })
+  </script>
+
+<script> 
+  $(document).ready(function() {
+      $('#extra_nav_buttons').removeClass("d-none");
+  })
+  </script>
+
+  {% endblock %}

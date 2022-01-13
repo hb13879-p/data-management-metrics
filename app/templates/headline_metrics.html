@@ -1,0 +1,28 @@
+  <!-- Metrics Container --> 
+  <div class="container"> 
+    <div class="row justify-content-center">
+      <!-- For loop logic of jinja template -->
+      {% for i in range(0, no_headline_metrics) %} 
+        
+      <div class="col-4 mb-4 mt-4">
+        <div class="card border-left-primary shadow h-100 w-75 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold {{headline_metric_colours[i]}} text-uppercase mb-1">{{headline_metric_labels[i]}}</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{headline_metrics[i]}}</div>
+              </div>
+              <div class="col-auto">
+                <i class="fa {{headline_metric_icons[i]}} fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% endfor %}
+
+    </div>
+    </div>
+</div>
+        <!-- End of Metrics Container -->

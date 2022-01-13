@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block head %}
+    {{ super() }}
+    <!-- Add any extra head stuff here -->
+{% endblock %}
+{% block content %}
+
+<div class="row justify-content-md-center">
+  <div class="col-md-auto">   
+        <div class="text-center">
+          <h3> Oops! </h3>
+          <h5> Page Not Found </h5>
+        </div>
+                Sorry - this page cannot be found. Please click <a href="{{url_for('index')}}"> here </a> to return to the homepage, or <a href='#'>Contact Us </a> so we can rectify the issue.
+          </div>
+  </div> 
+  {% endblock %}
+  

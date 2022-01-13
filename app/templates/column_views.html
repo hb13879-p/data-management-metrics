@@ -1,0 +1,79 @@
+<!-- Start of Column VIews Card -->
+    <div class="card mb-3 mt-2 text-center"> <!--text-white mt-2 mb-3 lighten-2  blue    p-3-->
+        <div class="card-body">
+        <h5 class="card-title">Column Views</h5>
+        <!-- Pills -->
+        <ul class="nav nav-pills mb-4">
+          <li class="nav-item">
+            <a class="nav-link active" data-toggle="pill" href="#visualise">Interactive</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="pill" href="#tabular">All Columns</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="pill" href="#targets">Targets</a>
+          </li>
+        </ul>
+        <!-- End of Pills -->
+        <!-- Visualise Tab -->
+        <div class="tab-content">
+        <div class="tab-pane container active" id="visualise">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            {% for item in cols %}
+            
+            {% if loop.index == 1 %}
+            <li class="nav-item">
+                <a class="nav-link active" id="{{item}}-tab" data-toggle="tab" href="#{{item}}" role="tab" aria-controls="{{item}}" aria-selected="true">{{item}}</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link" id="{{item}}-tab" data-toggle="tab" href="#{{item}}" role="tab" aria-controls="{{item}}" aria-selected="false">{{item}}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+      <!-- Tab panes -->
+        <div class="tab-content">
+          
+            {% for item in cols %}
+                {% if loop.index == 1 %}
+                     <div class="tab-pane active" id="{{item}}" role="tabpanel" aria-labelledby="{{item}}-tab">
+                        <i class="fa fa-spinner fa-spin mt-3" id="{{item}}-spinner"></i> <!-- fa-3x fa-fw -->
+                         <!-- <dl class="row">  </dl> -->
+                        </div> 
+                        <div id="{{item}}-plotHist"></div>
+                {% else %}
+                    <div class="tab-pane" id="{{item}}" role="tabpanel" aria-labelledby="{{item}}-tab"></div> <!--<div id="{{item}}-plotHist"></div> -->
+                {% endif %}
+            {% endfor %}
+            
+          </div>
+        </div> 
+        <!-- Start of Tabular Tab  -->
+<div class="tab-pane container fade" id="tabular">
+  <div id="tabular_tab_spinner">
+    <i class="fa fa-spinner fa-spin mt-3" id="tabular_tab_spinner"></i>
+  </div>
+  <div id="tabular_tab_div">
+    
+  </div>
+</div>
+<!-- End of Tabular Tab  -->
+ <!-- Start of Target Tab  -->
+ <div class="tab-pane container fade" id="targets">
+  <div id="targets_tab_spinner">
+    <i class="fa fa-spinner fa-spin mt-3" id="targets_tab_spinner"></i>
+  </div>
+  <div id="targets_tab_div">  
+  </div>  
+  
+
+ </div>
+ <!-- End of Target Tab  -->
+</div>
+    </div>
+    </div>
+
+
+
+<!-- End of Column Views Card -->
