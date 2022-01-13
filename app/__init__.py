@@ -7,25 +7,27 @@ app = Flask(__name__)
 
 
 class PrefixMiddleware(object):
+    # Add 3 letter prefix to all URLs as per requirements of deployment server
 
-    def __init__(self, app, prefix=''):
+    def __init__(self, app, prefix=""):
         self.app = app
-        self.prefix = prefix        
+        self.prefix = prefix
 
     def __call__(self, environ, start_response):
 
-        if environ['PATH_INFO'].startswith(self.prefix):
-            environ['PATH_INFO'] = environ['PATH_INFO'][len(self.prefix):]
-            environ['SCRIPT_NAME'] = self.prefix
+        if environ["PATH_INFO"].startswith(self.prefix):
+            environ["PATH_INFO"] = environ["PATH_INFO"][len(self.prefix) :]
+            environ["SCRIPT_NAME"] = self.prefix
             return self.app(environ, start_response)
         else:
-            environ['PATH_INFO'] = 'error' # environ['PATH_INFO'][len(self.prefix):]
-            environ['SCRIPT_NAME'] = self.prefix
+            environ["PATH_INFO"] = "error"
+            environ["SCRIPT_NAME"] = self.prefix
             return self.app(environ, start_response)
-			
-app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix='/DPR')
+
+
+app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix="/DPR")
 
 app.config.from_object(Config)
-app.config['SESSION_TYPE'] = 'filesystem'
+app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 from app import routes
