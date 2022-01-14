@@ -16,6 +16,9 @@ class DataSource(ABC):
 
 
 class InMemoryDataSource(DataSource):
+    '''
+    Generic data source that's reads a table into memory for processing
+    '''
     def __init__(self, data_reader: TabularDataReader):
         self.data_reader = data_reader
         self.data = self.data_reader.get_data()
@@ -31,6 +34,9 @@ class InMemoryDataSource(DataSource):
 
 
 class SQLDataSource(DataSource):
+    '''
+    Generic data source where processing occurs in some SQL database
+    '''
     def __init__(self, sql_view_connector: SQLViewConnector):
         self.sql_view_connector = sql_view_connector
 

@@ -14,6 +14,11 @@ import plotly
 
 
 class Metric(object):
+    '''
+    Generic Metric class. Metric calculation is run when the metric is called and the result stored as an attribute.
+    Once calculated, the result can be read rather than recalculated every time.
+
+    '''
     def __init__(self, data_source, metric_args={}):
         self.data_source = data_source
         self.metric_args = metric_args
@@ -56,6 +61,16 @@ class Metric(object):
 
 
 class BasicProfile(Metric):
+    """
+    Calculate basic descriptive statistics
+
+    Parameters:
+        inp (pd.DataFrame):input data
+        incl_graph (bool):whether a matplotlib graph should also be drawn
+
+    Returns:
+        pd.DataFrame
+    """
     label = "Basic Profile"
 
     def __init__(self, data_source, metric_args={}):
@@ -313,6 +328,17 @@ class DuplicateRows(Metric):
 
 
 class DetectBadAddress(Metric):
+    """
+        ML method for finding cases of valid strings but invalid addresses
+
+        Parameters:
+           inp (pd.DataFrame):input data (including but not limited to id and address columns)
+           id_col (int):index of id column
+           address_col (List[str]): list of column names to be concatenated to form an address (eg line 1, line 2, city might be [2,3,4]). They will be concatenated in the order provided
+
+        Returns:
+            pd.DataFrame:ID Column and address validity score
+    """
     label = "Detect Bad Address"
 
     def __init__(self, data_source, metric_args={}):
@@ -325,17 +351,6 @@ class DetectBadAddress(Metric):
         address_col: List[str] = ["addr", "city"],
         model_path: str = r"app/models/bow_model_pipeline_v2.joblib",
     ) -> pd.DataFrame:
-        """
-        Returns bad addresses from a list of Addresses.
-
-        Parameters:
-           inp (pd.DataFrame):input data (including but not limited to id and address columns)
-           id_col (int):index of id column
-           address_col (List[str]): list of column names to be concatenated to form an address (eg line 1, line 2, city might be [2,3,4]). They will be concatenated in the order provided
-
-        Returns:
-            pd.DataFrame:ID Column,
-        """
         model = load(model_path)
         addr = pd.DataFrame(data=inp[id_col], columns=[id_col])
         addr["addr"] = ""
@@ -405,6 +420,7 @@ class ExtractPIIAttributes(Metric):
 
     @staticmethod
     def calculate_in_mem(inp: pd.DataFrame) -> pd.DataFrame:
+        # TODO Implement this - Illustrative for now
         return "10/21"
 
     @staticmethod
@@ -420,6 +436,7 @@ class ExtractDataRules(Metric):
 
     @staticmethod
     def calculate_in_mem(inp: pd.DataFrame) -> pd.DataFrame:
+        # TODO Implement this
         rules = [
             '"user_id" is unique',
             '"Email_Address" is unique',
@@ -441,6 +458,17 @@ class ExtractDataRules(Metric):
 
 
 class ExtractBadPostcode(Metric):
+    """
+    Returns bad postcodes from a list of postcodes.
+
+    Parameters:
+        inp (pd.DataFrame):input data (including but not limited to id and address columns)
+        id_col (int):index of id column
+        postcd_col (str): list of indices of columns to be concatenated to form an address (eg line 1, line 2, city might be [2,3,4]). They will be concatenated in the order provided
+
+    Returns:
+        pd.DataFrame:
+    """
     label = "Extract Bad Postcode"
 
     def __init__(self, data_source, metric_args={}):
@@ -450,17 +478,7 @@ class ExtractBadPostcode(Metric):
     def calculate_in_mem(
         inp: pd.DataFrame, id_col: str = "id", postcd_col: str = "postcode"
     ) -> pd.DataFrame:
-        """
-        Returns bad postcodes from a list of postcodes.
-
-        Parameters:
-           inp (pd.DataFrame):input data (including but not limited to id and address columns)
-           id_col (int):index of id column
-           postcd_col (str): list of indices of columns to be concatenated to form an address (eg line 1, line 2, city might be [2,3,4]). They will be concatenated in the order provided
-
-        Returns:
-            pd.DataFrame:ID Column,
-        """
+        
         uk_postcode = re.compile(
             "([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})|([0-9][0-9][0-9][0-9][0-9])"
         )
@@ -474,6 +492,18 @@ class ExtractBadPostcode(Metric):
 
 
 class GroupedZScore(Metric):
+    """
+    Finds anomalies in Gaussian feature
+
+    Parameters:
+        inp (pd.DataFrame):input data (including but not limited to id and address columns)
+        group_key (str): group within which to search for anomalies
+        group_value (str): values within which to search for anomalies 
+        conf (float): must be 0.95 or 0.99
+
+    Returns:
+        pd.DataFrame:
+    """
     label = "Anomaly Detection"
 
     def __init__(self, data_source, metric_args={}):
@@ -487,18 +517,7 @@ class GroupedZScore(Metric):
         group_value: str = "credit_rate",
         conf: float = 0.99,
     ) -> pd.DataFrame:
-        """
-        Finds anomalies in Gaussian feature
-
-        Parameters:
-           inp (pd.DataFrame):input data (including but not limited to id and address columns)
-           group_key (str): group within which to search for anomalies
-           group_value (str): values within which to search for anomalies 
-           conf (float): must be 0.95 or 0.99
-
-        Returns:
-            pd.DataFrame:
-        """
+        
 
         df = inp[[id_col, group_key, group_value]]
         df[group_key] = df[group_key].apply(
@@ -522,6 +541,17 @@ class GroupedZScore(Metric):
 
 
 class SupervisedAnomalyDetection(Metric):
+    """
+    Runs the inputs through the provided model to predict an output. If the predicted output deviates from the true output by more than the 2 std devs then flag as anomaly
+
+    Parameters:
+        inp (pd.DataFrame):input data (including but not limited to id and address columns)
+        id_col (int):index of id column
+        postcd_col (str): list of indices of columns to be concatenated to form an address (eg line 1, line 2, city might be [2,3,4]). They will be concatenated in the order provided
+
+    Returns:
+        pd.DataFrame:
+    """
     label = "Anomaly Detection"
 
     def __init__(self, data_source, metric_args={}):
@@ -535,17 +565,7 @@ class SupervisedAnomalyDetection(Metric):
         y_col: str = "output",
         model_path: str = r"app/models/premium_model.joblib",
     ) -> pd.DataFrame:
-        """
-        Runs the inputs through the provided model to predict an output. If the predicted output deviates from the true output by more than the 2 std devs then flag as anomaly
-
-        Parameters:
-           inp (pd.DataFrame):input data (including but not limited to id and address columns)
-           id_col (int):index of id column
-           postcd_col (str): list of indices of columns to be concatenated to form an address (eg line 1, line 2, city might be [2,3,4]). They will be concatenated in the order provided
-
-        Returns:
-            pd.DataFrame:ID Column,
-        """
+        
 
         model = load(model_path)
         X = inp[x_cols]

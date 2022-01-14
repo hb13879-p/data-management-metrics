@@ -7,6 +7,7 @@ from sqlalchemy.sql import text
 class SQLConnector(object):
     @staticmethod
     def sql_connector_factory(prefix, db_creds):
+        # TODO Add other SQL dialects
         class MySQLConnector(SQLConnector):
             prefix = "mysql+pymysql"
 
