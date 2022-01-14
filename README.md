@@ -37,7 +37,7 @@ Use of Regexes to clean Postcodes, phone numbers, NI numbers, email addresses et
 
 
 ## Running the code
-Clone, pip install requirements.txt, combine with data source and run. Can either run the flask app (`python runserver.py`), run the `debug.py` script, or run the tests with `./run_tests.sh`.
+Clone, pip install requirements.txt, place data into app/files and run. Can either run the flask app (`python runserver.py`), run the `debug.py` script, or run the tests with `./run_tests.sh`.
 
 ## Code Structure Overview
 The main backend code is in the 'profiler' folder:
