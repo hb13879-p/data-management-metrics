@@ -44,8 +44,33 @@ The main backend code is in the 'profiler' folder:
  ### dashboards.py
  Dashboard classes. Dashboards are made up of customisable collections of Metrics
 
+ ### data_sources.py
+ data sources. In Memory or SQL.
+
+ #### In memory data sources
+ Defined with any form of tabular data reader.
+ Attribute self.data holds data in memory. A given metric is run by passing this data to the metric function code.
+
  ### metrics.py
  Metrics - each can be defined as required. Code to calculate given metrics can be supplied for a range of data sources (eg code for in memory calculation, code for calculation of metric in SQL database etc)
+
+ Metrics are designed to be defined on a data source (which itself is defined as either in mem or as SQL). So for example you can define a metric like bcm_inmem_data_basic_profile up front, then calculate it only when you need to. Underlying data source is therefore abstracted from both how it is calculated and functional calculation code. eg you could have an row count metric where processing is done in memory and change the underlying data between csv, json etc 
+
+ first argument of a metric is always the data source. Second is any kw args needed for the underlying function code
+
+ Example of custom metrics - import your own trained bad address model
+
+ Metric passes function to data source. Data source, responsible for running hte function on the data, runs the function on its data (in mem) or runs the function on the SQL connector.
+
+ SQL connectors have a method called run query. The config for this is handled by the SQLViewConnector object. The SQL data source object just has to call 
+
+ calculate sql_tbl actually calls run_query 
+
+ NB Dashboards don't depend on data sources - so can have one dashboard conatining metrics from multiple data sources
+
+ The Backend lives in the profiler section
+
+ For both in mem and sql metrics can calculate by m().  
 
  ### sql_connectors.py
  Various classes for connecting to different SQL dialects (MySQL, Postgres etc)

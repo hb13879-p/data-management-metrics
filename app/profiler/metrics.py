@@ -217,7 +217,7 @@ class TotalBlankCells(Metric):
         else:
             row_count = len(inp)
             col_count = len(inp.columns)
-            return str(round(total_blank_cells / (row_count * col_count), dp)) + "%"
+            return round(total_blank_cells / (row_count * col_count), dp)
 
     @staticmethod
     def calculate_sql_tbl(sql_view_connector: SQLViewConnector, pc: bool = True):

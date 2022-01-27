@@ -114,7 +114,7 @@ def output():
             bcm_data_source, {"id_col": "user_id", "address_col": ["address", "city"]}
         ),
         [
-            TotalBlankCells(bcm_data_source, {"pc": True}),
+            TotalBlankCells(bcm_data_source, {"pc": False}),
             TotalRowsCols(bcm_data_source),
             DuplicateRows(bcm_data_source),
             ExtractPIIAttributes(bcm_data_source),
@@ -195,7 +195,7 @@ def get_anomaly_data():
 def get_ml_address_data():
     dashboard = session["dashboard"]
     df = dashboard.get_ml_address_view()
-    app.logger.debug(df.loc[df["Validity Score"] < 0.5])
+    # app.logger.debug(df.loc[df["Validity Score"] < 0.5])
     df = df.drop_duplicates(subset=["addr", "Validity Score"]).head(
         20
     )  # .sort_values('Validity Score')

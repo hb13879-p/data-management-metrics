@@ -42,6 +42,18 @@ class SQLTableReader(SQLViewConnector, TabularDataReader):
         return self.data
 
 
+class DataFrameReader(TabularDataReader):
+    def __init__(self, df):
+        self.data = df
+        self.read_in_data()
+
+    def read_in_data(self):
+        # TODO add validation checks
+        pass
+
+    def get_data(self) -> pd.DataFrame:
+            return self.data
+
 class CSVReader(TabularDataReader):
     def __init__(self, path: str, filename: str):
         self.path = path
@@ -62,7 +74,7 @@ class ExcelReader(TabularDataReader):
         self.read_in_data()
 
     def read_in_data(self):
-        self.data = pd.read_excel(os.path.join(self.path, self.filename))
+        self.data = pd.read_excel(os.path.join(self.path, self.filename), engine='openpyxl')
 
     def get_data(self) -> pd.DataFrame:
         return self.data

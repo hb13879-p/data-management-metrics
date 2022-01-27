@@ -18,6 +18,13 @@ class Dashboard(object):
         for m in self.metrics:
             m()
 
+    def add_metric(self, metric: Metric):
+        self.metrics.append(metric)
+
+    def add_metrics(self, metrics: List[Metric]):
+        for m in metrics:
+            self.add_metric(m)
+
     def calculate_dashboard(self):
         """
         can be overridden for specific dashboard types' requirements
@@ -27,6 +34,9 @@ class Dashboard(object):
     def print_all_results(self):
         for m in self.metrics:
             print(m.get_result())
+    
+    def get_all_results(self):
+        return [m.get_result() for m in self.metrics]
 
 
 class StandardDashboard(Dashboard):

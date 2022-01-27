@@ -6,8 +6,104 @@ from app.profiler.sql_connectors import SQLViewConnector
 from typing import Tuple
 import pandas as pd
 import numpy as np
+from pandas.testing import assert_frame_equal
+
+class StaticMetricTestsInMem(unittest.TestCase):
+    ''' Test metrics on all in-memory readers with dummy data '''
+    ''' Static methods used so class can be used to just give you the answer if needed '''
+    def test_static_basic_profile(self):
+        df = pd.DataFrame({
+                "symbol": ["A", "B", "C", "A", "B", "C"],
+                "price": [12, 24, 48, 14, 13, 20],
+            })
+        ans = BasicProfile.calculate_in_mem(df, False)
+        exp_results = pd.DataFrame({
+                "01. Column Name": ["symbol", "price"],
+                "02. Data Type" : ["object", "int64"],
+                "03. Row Count" : [6,6],
+                "04. Nulls" : [0,0],
+                "05. Non-Nulls" : [6,6],
+                "06. No. Unique Values" : [3,6],
+                "07. Average Value" : [None,21.833333],
+                "08. Standard Deviation" : [None,13.629625],
+                "09. Minimum" : [None,12.0],
+                "10. Maximum" : [None,48.0],
+                "11. 25%" : [None,13.25],
+                "12. 50%" : [None,17.0],
+                "13. 75%" : [None,23.0],
+                "count" : [None,6.0],
+            })
+        assert_frame_equal(ans,exp_results)
+
+    def test_static_blanks(self):
+        df = pd.DataFrame({
+                "symbol": ["A", "B", "C", "A", "B", "C"],
+                "price": [12, 24, 48, 14, 13, 20],
+            })
+        ans = TotalBlankCells.calculate_in_mem(df, pc=False)
+        self.assertEqual(ans,0)
+        df = pd.DataFrame({
+                "symbol": ["A", "B", "C", None, "B", None],
+                "price": [12, 24, 48, 14, None, 20],
+            })
+        ans = TotalBlankCells.calculate_in_mem(df, pc=False)
+        self.assertEqual(ans,3)
+        # test as a percentage
+        df = pd.DataFrame({
+                "symbol": ["A", "B", "C", "A", "B", "C"],
+                "price": [12, 24, 48, 14, 13, 20],
+            })
+        ans = TotalBlankCells.calculate_in_mem(df, pc=True)
+        self.assertEqual(ans,0)
+        df = pd.DataFrame({
+                "symbol": ["A", "B", "C", None, "B", None],
+                "price": [12, 24, 48, 14, None, 20],
+            })
+        ans = TotalBlankCells.calculate_in_mem(df, pc=True)
+        self.assertEqual(ans,0.25)
+
+    def test_static_tot_row_col(self):
+        df = pd.DataFrame({
+                "symbol": ["A", "B", "C", "A", "B", "C"],
+                "price": [12, 24, 48, 14, 13, 20],
+            })
+        ans = TotalRowsCols.calculate_in_mem(df)
+        self.assertEqual(ans,(6,2))
+
+    def test_static_dupe_row(self):
+        df = pd.DataFrame({
+                "symbol": ["A", "B", "C", "A", "B", "C"],
+                "price": [12, 24, 48, 12, 13, 20],
+            })
+        ans = DuplicateRows.calculate_in_mem(df)
+        self.assertEqual(ans,1)  
+
+    def test_static_bad_address(self):
+        
+        df = pd.DataFrame({
+                "user_id": [1, 2, 3],
+                "address": ['4 Mill Lane, London', '56 Cowper Street, Edinburgh', 'No address found for this customer'],
+            })
+        ans = DetectBadAddress.calculate_in_mem(df, **{'id_col':'user_id','address_col':['address']})
+        ans = ans.loc[ans["Validity Score"] < 0.5].values
+        ans = ans.tolist()[0][:2]
+        self.assertEqual(ans,[3, 'No address found for this customer'])
+
+    def test_static_bad_postcode(self):
+        
+        df = pd.DataFrame({
+                "user_id": [1, 2, 3, 4, 5],
+                "postcd": ['DDDDDD', 'SE210AA', 'RG44RF', '453', '@2BG'],
+            })
+        ans = ExtractBadPostcode.calculate_in_mem(df, **{'id_col':'user_id','postcd_col':'postcd'})
+        ans = ans.values.tolist()
+        self.assertEqual(ans,[[1, 'DDDDDD'],[4,'453'],[5,'@2BG']]) 
+    
+
+
 
 class CSVMetricTestsBCM(unittest.TestCase):
+    ''' run basic tests for mortgage data with in-memory calcs '''
     @classmethod
     def setUpClass(cls):
         csv_reader = CSVReader(r'app/files','mortgage_data_v4.csv')
