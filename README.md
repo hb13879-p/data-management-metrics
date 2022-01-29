@@ -1,11 +1,10 @@
 # Data Management Tool
-This package implements a tool allowing users to examine and monitor the structure, content and relationships present in their data. As well as focusing on traditional metrics such as counts of values, distinct values, means, medians etc, this tool also provides the flexibility to add bespoke more advanced metrics.
+This package implements a tool allowing users to examine and monitor the structure, content and relationships present in their data. As well as focusing on traditional metrics such as counts of values, distinct values, means, medians etc, this tool also provides the flexibility to add bespoke, more advanced metrics.
 
 See the demo notebook for a more detailed walkthrough. If this can't be run, there is also an html version to view.
 
-# Demo Dashboard Screenshots
+# Demo Dashboard Screenshots and Example Metrics
 
-## Example Metrics
 ### Headline Metrics
 Customise which metrics are most important to you and have them appear at the top of the dashboard
 ![headline_metrics](https://user-images.githubusercontent.com/97685851/149484416-5fb3bbb0-08af-465e-a294-d4cd6f0b97d1.PNG)

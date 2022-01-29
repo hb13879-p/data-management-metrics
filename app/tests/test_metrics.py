@@ -128,7 +128,7 @@ class CSVMetricTestsBCM(unittest.TestCase):
 
     def test_blanks_csv(self):
         csv_blanks = TotalBlankCells(self.data_source,{'pc':True})
-        self.assertIsInstance(csv_blanks(), str)
+        self.assertIsInstance(csv_blanks(), float)
         self.assertIsInstance(csv_blanks(pc=False), np.int64)
 
     def test_tot_rows_cols_csv(self):
@@ -162,16 +162,16 @@ class CSVMetricTestsBCM(unittest.TestCase):
         #print(csv_groupz())
         self.assertIsInstance(csv_groupz(), pd.DataFrame)
 
-class CSVMetricTestsIns(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        csv_reader = CSVReader(r'app/files','insurance_data.csv')
-        cls.data_source = InMemoryDataSource(csv_reader)        
+# class CSVMetricTestsIns(unittest.TestCase):
+#     @classmethod
+#     def setUpClass(cls):
+#         csv_reader = CSVReader(r'app/files','insurance_data.csv')
+#         cls.data_source = InMemoryDataSource(csv_reader)        
 
-    def test_spv_anom_detect_in_mem(self):
-        csv_anom_ins = SupervisedAnomalyDetection(self.data_source,{'id_col':'user_id','x_cols':['Age_days','Annual_Mileage','Vehicle_Value','Previous_Claims'],'y_col':'Premium'})
-        csv_anom_ins()
-        self.assertIsInstance(csv_anom_ins.get_result(), pd.DataFrame) 
+#     def test_spv_anom_detect_in_mem(self):
+#         csv_anom_ins = SupervisedAnomalyDetection(self.data_source,{'id_col':'user_id','x_cols':['Age_days','Annual_Mileage','Vehicle_Value','Previous_Claims'],'y_col':'Premium'})
+#         csv_anom_ins()
+#         self.assertIsInstance(csv_anom_ins.get_result(), pd.DataFrame) 
         
 
 # class MySQLInMemMetricTests(unittest.TestCase):
