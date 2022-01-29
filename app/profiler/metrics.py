@@ -14,11 +14,12 @@ import plotly
 
 
 class Metric(object):
-    '''
+    """
     Generic Metric class. Metric calculation is run when the metric is called and the result stored as an attribute.
     Once calculated, the result can be read rather than recalculated every time.
 
-    '''
+    """
+
     def __init__(self, data_source, metric_args={}):
         self.data_source = data_source
         self.metric_args = metric_args
@@ -71,6 +72,7 @@ class BasicProfile(Metric):
     Returns:
         pd.DataFrame
     """
+
     label = "Basic Profile"
 
     def __init__(self, data_source, metric_args={}):
@@ -329,16 +331,17 @@ class DuplicateRows(Metric):
 
 class DetectBadAddress(Metric):
     """
-        ML method for finding cases of valid strings but invalid addresses
+    ML method for finding cases of valid strings but invalid addresses
 
-        Parameters:
-           inp (pd.DataFrame):input data (including but not limited to id and address columns)
-           id_col (int):index of id column
-           address_col (List[str]): list of column names to be concatenated to form an address (eg line 1, line 2, city might be [2,3,4]). They will be concatenated in the order provided
+    Parameters:
+       inp (pd.DataFrame):input data (including but not limited to id and address columns)
+       id_col (int):index of id column
+       address_col (List[str]): list of column names to be concatenated to form an address (eg line 1, line 2, city might be [2,3,4]). They will be concatenated in the order provided
 
-        Returns:
-            pd.DataFrame:ID Column and address validity score
+    Returns:
+        pd.DataFrame:ID Column and address validity score
     """
+
     label = "Detect Bad Address"
 
     def __init__(self, data_source, metric_args={}):
@@ -469,6 +472,7 @@ class ExtractBadPostcode(Metric):
     Returns:
         pd.DataFrame:
     """
+
     label = "Extract Bad Postcode"
 
     def __init__(self, data_source, metric_args={}):
@@ -478,7 +482,7 @@ class ExtractBadPostcode(Metric):
     def calculate_in_mem(
         inp: pd.DataFrame, id_col: str = "id", postcd_col: str = "postcode"
     ) -> pd.DataFrame:
-        
+
         uk_postcode = re.compile(
             "([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})|([0-9][0-9][0-9][0-9][0-9])"
         )
@@ -498,12 +502,13 @@ class GroupedZScore(Metric):
     Parameters:
         inp (pd.DataFrame):input data (including but not limited to id and address columns)
         group_key (str): group within which to search for anomalies
-        group_value (str): values within which to search for anomalies 
+        group_value (str): values within which to search for anomalies
         conf (float): must be 0.95 or 0.99
 
     Returns:
         pd.DataFrame:
     """
+
     label = "Anomaly Detection"
 
     def __init__(self, data_source, metric_args={}):
@@ -517,7 +522,6 @@ class GroupedZScore(Metric):
         group_value: str = "credit_rate",
         conf: float = 0.99,
     ) -> pd.DataFrame:
-        
 
         df = inp[[id_col, group_key, group_value]]
         df[group_key] = df[group_key].apply(
@@ -552,6 +556,7 @@ class SupervisedAnomalyDetection(Metric):
     Returns:
         pd.DataFrame:
     """
+
     label = "Anomaly Detection"
 
     def __init__(self, data_source, metric_args={}):
@@ -565,7 +570,6 @@ class SupervisedAnomalyDetection(Metric):
         y_col: str = "output",
         model_path: str = r"app/models/premium_model.joblib",
     ) -> pd.DataFrame:
-        
 
         model = load(model_path)
         X = inp[x_cols]

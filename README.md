@@ -1,7 +1,9 @@
 # Data Management Tool
 This package implements a tool allowing users to examine and monitor the structure, content and relationships present in their data. As well as focusing on traditional metrics such as counts of values, distinct values, means, medians etc, this tool also provides the flexibility to add bespoke more advanced metrics.
 
-The tool is presented as a Flask application. Screenshots below:
+See the demo notebook for a more detailed walkthrough. If this can't be run, there is also an html version to view.
+
+# Demo Dashboard Screenshots
 
 ## Example Metrics
 ### Headline Metrics
@@ -36,44 +38,3 @@ Use of Regexes to clean Postcodes, phone numbers, NI numbers, email addresses et
 ![postcode](https://user-images.githubusercontent.com/97685851/149484426-986984fe-2334-4922-a87d-0eef255b4e8f.PNG)
 
 
-## Running the code
-Clone, pip install requirements.txt, place data into app/files and run. Can either run the flask app (`python runserver.py`), run the `debug.py` script, or run the tests with `./run_tests.sh`.
-
-## Code Structure Overview
-The main backend code is in the 'profiler' folder:
- ### dashboards.py
- Dashboard classes. Dashboards are made up of customisable collections of Metrics
-
- ### data_sources.py
- data sources. In Memory or SQL.
-
- #### In memory data sources
- Defined with any form of tabular data reader.
- Attribute self.data holds data in memory. A given metric is run by passing this data to the metric function code.
-
- ### metrics.py
- Metrics - each can be defined as required. Code to calculate given metrics can be supplied for a range of data sources (eg code for in memory calculation, code for calculation of metric in SQL database etc)
-
- Metrics are designed to be defined on a data source (which itself is defined as either in mem or as SQL). So for example you can define a metric like bcm_inmem_data_basic_profile up front, then calculate it only when you need to. Underlying data source is therefore abstracted from both how it is calculated and functional calculation code. eg you could have an row count metric where processing is done in memory and change the underlying data between csv, json etc 
-
- first argument of a metric is always the data source. Second is any kw args needed for the underlying function code
-
- Example of custom metrics - import your own trained bad address model
-
- Metric passes function to data source. Data source, responsible for running hte function on the data, runs the function on its data (in mem) or runs the function on the SQL connector.
-
- SQL connectors have a method called run query. The config for this is handled by the SQLViewConnector object. The SQL data source object just has to call 
-
- calculate sql_tbl actually calls run_query 
-
- NB Dashboards don't depend on data sources - so can have one dashboard conatining metrics from multiple data sources
-
- The Backend lives in the profiler section
-
- For both in mem and sql metrics can calculate by m().  
-
- ### sql_connectors.py
- Various classes for connecting to different SQL dialects (MySQL, Postgres etc)
-
- ### tabular_readers.py
- Classes for reading different forms of tabular data into memory (CSV, Json, SQL result that fits in memory etc)

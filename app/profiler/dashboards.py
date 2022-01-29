@@ -34,7 +34,7 @@ class Dashboard(object):
     def print_all_results(self):
         for m in self.metrics:
             print(m.get_result())
-    
+
     def get_all_results(self):
         return [m.get_result() for m in self.metrics]
 
